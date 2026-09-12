@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiniShop</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div>
+      <p class="eyebrow">Kubernetes Learning Store</p>
+      <h1>MiniShop</h1>
+    </div>
+    <button id="cartButton">Cart <span id="cartCount">0</span></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Production-style demo app</p>
+        <h2>Simple commerce. Serious infrastructure.</h2>
+        <p>
+          A tiny storefront designed for Kubernetes, GitHub Actions,
+          Trivy, ECR and Argo CD practice.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <h2>Products</h2>
+        <p id="status"></p>
+      </div>
+      <div id="products" class="grid"></div>
+    </section>
+  </main>
+
+  <dialog id="cartDialog">
+    <form method="dialog">
+      <div class="dialog-header">
+        <h2>Your cart</h2>
+        <button aria-label="Close">×</button>
+      </div>
+    </form>
+
+    <div id="cartItems"></div>
+
+    <form id="checkoutForm">
+      <label>
+        Name
+        <input id="customerName" required minlength="2" />
+      </label>
+      <label>
+        Email
+        <input id="customerEmail" type="email" required />
+      </label>
+      <button type="submit" class="primary">Place order</button>
+    </form>
+
+    <p id="checkoutMessage"></p>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>
