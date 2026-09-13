@@ -1,0 +1,66 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+      - "feat/**"
+    paths:
+      - "infrastructure/**"
+      - ".github/workflows/terraform-ci.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "infrastructure/**"
+      - ".github/workflows/terraform-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terraform-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform-validation:
+    name: Terraform Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.14.3
+          terraform_wrapper: false
+
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive infrastructure
+
+      - name: Initialize Terraform
+        working-directory: infrastructure/environments/dev
+        run: terraform init -backend=false -input=false
+
+      - name: Validate Terraform
+        working-directory: infrastructure/environments/dev
+        run: terraform validate -no-color
+
+  terraform-security:
+    name: Terraform Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Scan Terraform with Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: infrastructure
+          framework: terraform
+          soft_fail: false
+          output_format: cli
