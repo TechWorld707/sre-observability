@@ -65,11 +65,11 @@ variable "enable_flow_logs" {
 variable "flow_log_retention_days" {
   description = "Number of days that VPC Flow Logs are retained."
   type        = number
-  default     = 30
+  default     = 365
 
   validation {
-    condition     = var.flow_log_retention_days > 0
-    error_message = "flow_log_retention_days must be greater than zero."
+    condition     = var.flow_log_retention_days >= 365
+    error_message = "flow_log_retention_days must be greater than or equal to 365."
   }
 }
 
