@@ -1,0 +1,84 @@
+variable "project_name" {
+  description = "Name of the overall project."
+  type        = string
+  default     = "sre-observability"
+}
+
+variable "network_name" {
+  description = "Name prefix used for the VPC and associated network resources."
+  type        = string
+  default     = "my-vpc"
+}
+
+variable "environment" {
+  description = "Deployment environment."
+  type        = string
+  default     = "dev"
+}
+
+variable "aws_region" {
+  description = "AWS region in which resources will be created."
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "vpc_cidr" {
+  description = "IPv4 CIDR block assigned to the VPC."
+  type        = string
+  default     = "10.0.0.0/16"
+
+  validation {
+    condition     = can(cidrhost(var.vpc_cidr, 0))
+    error_message = "vpc_cidr must be a valid IPv4 CIDR block."
+  }
+}
+
+variable "availability_zone_count" {
+  description = "Number of Availability Zones used by the network."
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.availability_zone_count >= 2
+    error_message = "At least two Availability Zones must be used."
+  }
+}
+
+variable "enable_nat_gateway" {
+  description = "Whether NAT gateways should be created."
+  type        = bool
+  default     = true
+}
+
+variable "single_nat_gateway" {
+  description = "Whether one shared NAT gateway should be used to reduce development cost."
+  type        = bool
+  default     = true
+}
+
+variable "enable_flow_logs" {
+  description = "Whether VPC Flow Logs should be sent to CloudWatch Logs."
+  type        = bool
+  default     = true
+}
+
+variable "flow_log_retention_days" {
+  description = "Number of days that VPC Flow Logs are retained."
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.flow_log_retention_days > 0
+    error_message = "flow_log_retention_days must be greater than zero."
+  }
+}
+
+variable "tags" {
+  description = "Additional tags applied to AWS resources."
+  type        = map(string)
+
+  default = {
+    Owner      = "TechWorld707"
+    Repository = "sre-observability"
+  }
+}
