@@ -59,7 +59,7 @@ variable "enable_flow_logs" {
 variable "flow_log_retention_days" {
   description = "Number of days to retain VPC Flow Logs."
   type        = number
-  default     = 30
+  default     = 365
 }
 
 variable "tags" {

@@ -1,5 +1,9 @@
 data "aws_partition" "current" {}
 
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
 locals {
   common_tags = merge(
     var.tags,
@@ -48,6 +52,20 @@ resource "aws_vpc" "my_vpc" {
   )
 }
 
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  ingress = []
+  egress  = []
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.name}-default-security-group"
+    }
+  )
+}
+
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.my_vpc.id
 
@@ -65,7 +83,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.my_vpc.id
   availability_zone       = each.key
   cidr_block              = var.public_subnet_cidrs[each.value]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = merge(
     local.common_tags,
@@ -219,11 +237,76 @@ resource "aws_route_table_association" "isolated_database" {
   route_table_id = aws_route_table.isolated_database[each.key].id
 }
 
+resource "aws_kms_key" "vpc_flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  description             = "Encrypts VPC Flow Logs for ${var.name}"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Sid    = "EnableAccountAdministration"
+        Effect = "Allow"
+
+        Principal = {
+          AWS = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowCloudWatchLogsEncryption"
+        Effect = "Allow"
+
+        Principal = {
+          Service = "logs.${data.aws_region.current.region}.amazonaws.com"
+        }
+
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+
+        Resource = "*"
+
+        Condition = {
+          ArnEquals = {
+            "kms:EncryptionContext:aws:logs:arn" = "arn:${data.aws_partition.current.partition}:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vpc/${var.name}/flow-logs"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.name}-vpc-flow-logs-key"
+    }
+  )
+}
+
+resource "aws_kms_alias" "vpc_flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  name          = "alias/${var.name}-vpc-flow-logs"
+  target_key_id = aws_kms_key.vpc_flow_logs[0].key_id
+}
+
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   count = var.enable_flow_logs ? 1 : 0
 
   name              = "/aws/vpc/${var.name}/flow-logs"
   retention_in_days = var.flow_log_retention_days
+  kms_key_id        = aws_kms_key.vpc_flow_logs[0].arn
 
   tags = merge(
     local.common_tags,
