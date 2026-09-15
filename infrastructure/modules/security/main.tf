@@ -8,6 +8,7 @@ locals {
 }
 
 resource "aws_security_group" "alb" {
+  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming ALB module.
   name        = "${var.name}-alb"
   description = "Controls traffic to and from the public Application Load Balancer."
   vpc_id      = var.vpc_id
@@ -24,6 +25,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "frontend" {
+  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming frontend ECS service.
   name        = "${var.name}-frontend"
   description = "Allows frontend traffic only from the Application Load Balancer."
   vpc_id      = var.vpc_id
@@ -40,6 +42,7 @@ resource "aws_security_group" "frontend" {
 }
 
 resource "aws_security_group" "backend" {
+  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming backend ECS service.
   name        = "${var.name}-backend"
   description = "Allows backend traffic only from the frontend."
   vpc_id      = var.vpc_id
@@ -56,6 +59,7 @@ resource "aws_security_group" "backend" {
 }
 
 resource "aws_security_group" "database" {
+  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming PostgreSQL RDS module.
   name        = "${var.name}-database"
   description = "Allows PostgreSQL traffic only from the backend."
   vpc_id      = var.vpc_id
@@ -73,8 +77,9 @@ resource "aws_security_group" "database" {
 
 # HTTP is temporarily permitted for the public ALB.
 # The ALB module will redirect HTTP requests to HTTPS.
-# checkov:skip=CKV_AWS_260: Port 80 is required for ALB HTTP-to-HTTPS redirection.
 resource "aws_vpc_security_group_ingress_rule" "alb_http" {
+  #checkov:skip=CKV_AWS_260: Public HTTP is allowed only for ALB redirection to HTTPS.
+
   security_group_id = aws_security_group.alb.id
 
   description = "Allow public HTTP traffic for HTTPS redirection."
@@ -105,6 +110,7 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_frontend" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "frontend_from_alb" {
+  #checkov:skip=CKV_AWS_260: Port 80 is restricted to the ALB security group and is not publicly accessible.
   security_group_id = aws_security_group.frontend.id
 
   description                  = "Allow frontend traffic only from the ALB."
