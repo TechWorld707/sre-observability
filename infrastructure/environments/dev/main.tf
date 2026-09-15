@@ -55,3 +55,16 @@ module "network" {
 
   tags = local.common_tags
 }
+
+module "security" {
+  source = "../../modules/security"
+
+  name   = local.name
+  vpc_id = module.network.vpc_id
+
+  frontend_port = 80
+  backend_port  = 8000
+  database_port = 5432
+
+  tags = local.common_tags
+}
