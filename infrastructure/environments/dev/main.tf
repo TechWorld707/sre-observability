@@ -68,3 +68,21 @@ module "security" {
 
   tags = local.common_tags
 }
+
+module "alb" {
+  source = "../../modules/alb"
+
+  name                 = local.name
+  vpc_id               = module.network.vpc_id
+  public_subnet_ids    = module.network.public_subnet_ids
+  security_group_id    = module.security.alb_security_group_id
+  frontend_port        = 80
+  health_check_path    = "/healthz"
+  certificate_arn      = null
+  idle_timeout_seconds = 60
+
+  # Development must support controlled teardown.
+  enable_deletion_protection = false
+
+  tags = local.common_tags
+}

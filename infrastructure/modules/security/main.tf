@@ -8,7 +8,7 @@ locals {
 }
 
 resource "aws_security_group" "alb" {
-  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming ALB module.
+  #checkov:skip=CKV2_AWS_5: Checkov cannot resolve the cross-module attachment; this ID is attached to module.alb.
   name        = "${var.name}-alb"
   description = "Controls traffic to and from the public Application Load Balancer."
   vpc_id      = var.vpc_id
@@ -78,7 +78,7 @@ resource "aws_security_group" "database" {
 # HTTP is temporarily permitted for the public ALB.
 # The ALB module will redirect HTTP requests to HTTPS.
 resource "aws_vpc_security_group_ingress_rule" "alb_http" {
-  #checkov:skip=CKV_AWS_260: Public HTTP is allowed only for ALB redirection to HTTPS.
+  #checkov:skip=CKV_AWS_260: Development permits public HTTP until an ACM certificate and domain are configured.
 
   security_group_id = aws_security_group.alb.id
 
