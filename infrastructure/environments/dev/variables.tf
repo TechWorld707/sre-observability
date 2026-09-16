@@ -82,3 +82,38 @@ variable "tags" {
     Repository = "sre-observability"
   }
 }
+
+variable "frontend_container_image" {
+  description = "Immutable GHCR image used by the frontend ECS service."
+  type        = string
+
+  validation {
+    condition = (
+      startswith(var.frontend_container_image, "ghcr.io/") &&
+      !endswith(var.frontend_container_image, ":latest")
+    )
+    error_message = "The frontend image must be a GHCR image with an immutable tag, not latest."
+  }
+}
+
+variable "frontend_desired_count" {
+  description = "Desired number of frontend ECS tasks."
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.frontend_desired_count >= 2
+    error_message = "At least two frontend tasks are required for multi-AZ availability."
+  }
+}
+
+variable "frontend_log_retention_days" {
+  description = "Number of days to retain frontend ECS logs."
+  type        = number
+  default     = 365
+
+  validation {
+    condition     = var.frontend_log_retention_days >= 365
+    error_message = "Frontend ECS logs must be retained for at least 365 days."
+  }
+}

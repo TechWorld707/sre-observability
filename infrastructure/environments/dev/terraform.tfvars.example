@@ -17,3 +17,9 @@ tags = {
   Owner      = "TechWorld707"
   Repository = "sre-observability"
 }
+
+# Replace this placeholder with the immutable commit-SHA tag published by GitHub Actions.
+frontend_container_image = "ghcr.io/techworld707/sre-observability/frontend:replace-with-commit-sha"
+
+frontend_desired_count      = 2
+frontend_log_retention_days = 365
