@@ -8,7 +8,10 @@ locals {
 }
 
 resource "aws_lb" "frontend" {
-  #checkov:skip=CKV_AWS_91: ALB access logging will be enabled when the centralized logging bucket is added.
+  #checkov:skip=CKV_AWS_91: Access logging will be enabled when the centralized logging S3 bucket is added.
+  #checkov:skip=CKV_AWS_150: Development disables deletion protection to support controlled cost-safe teardown.
+  #checkov:skip=CKV2_AWS_20: Development permits HTTP until a domain and ACM certificate are configured.
+  #checkov:skip=CKV2_AWS_28: WAF association will be added with the edge security module.
 
   name               = "${var.name}-alb"
   internal           = false
@@ -33,6 +36,7 @@ resource "aws_lb" "frontend" {
 }
 
 resource "aws_lb_target_group" "frontend" {
+  #checkov:skip=CKV_AWS_378: TLS terminates at the ALB; traffic to the Nginx frontend remains inside the VPC.
   name        = "${var.name}-frontend"
   port        = var.frontend_port
   protocol    = "HTTP"
@@ -64,6 +68,7 @@ resource "aws_lb_target_group" "frontend" {
 
 resource "aws_lb_listener" "http_forward" {
   #checkov:skip=CKV_AWS_2: Development supports HTTP until an ACM certificate and domain are configured.
+  #checkov:skip=CKV_AWS_103: This development-only listener uses HTTP; the conditional HTTPS listener enforces TLS 1.2 or newer.
 
   count = var.certificate_arn == null ? 1 : 0
 
