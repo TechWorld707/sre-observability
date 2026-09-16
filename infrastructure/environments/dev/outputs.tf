@@ -52,3 +52,23 @@ output "database_security_group_id" {
   description = "ID of the PostgreSQL database security group."
   value       = module.security.database_security_group_id
 }
+
+output "load_balancer_dns_name" {
+  description = "Public DNS name of the Application Load Balancer."
+  value       = module.alb.load_balancer_dns_name
+}
+
+output "load_balancer_arn_suffix" {
+  description = "ARN suffix used for ALB CloudWatch metrics."
+  value       = module.alb.load_balancer_arn_suffix
+}
+
+output "frontend_target_group_arn" {
+  description = "ARN of the frontend target group."
+  value       = module.alb.frontend_target_group_arn
+}
+
+output "frontend_target_group_arn_suffix" {
+  description = "ARN suffix used for target-group CloudWatch metrics."
+  value       = module.alb.frontend_target_group_arn_suffix
+}
