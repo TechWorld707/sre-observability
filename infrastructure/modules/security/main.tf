@@ -8,7 +8,6 @@ locals {
 }
 
 resource "aws_security_group" "alb" {
-  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming ALB module.
   name        = "${var.name}-alb"
   description = "Controls traffic to and from the public Application Load Balancer."
   vpc_id      = var.vpc_id
