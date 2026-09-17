@@ -5,6 +5,8 @@ aws_region   = "us-east-1"
 vpc_cidr               = "10.0.0.0/16"
 availability_zone_count = 2
 
+availability_zone_ids = ["use1-az1", "use1-az2"]
+
 # Development uses one NAT gateway to reduce cost.
 # Production should normally use one NAT gateway per Availability Zone.
 enable_nat_gateway = true
@@ -17,3 +19,9 @@ tags = {
   Owner      = "TechWorld707"
   Repository = "sre-observability"
 }
+
+# Replace this placeholder with the immutable commit-SHA tag published by GitHub Actions.
+frontend_container_image = "ghcr.io/techworld707/sre-observability/frontend:replace-with-commit-sha"
+
+frontend_desired_count      = 2
+frontend_log_retention_days = 365

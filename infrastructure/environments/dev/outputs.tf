@@ -72,3 +72,33 @@ output "frontend_target_group_arn_suffix" {
   description = "ARN suffix used for target-group CloudWatch metrics."
   value       = module.alb.frontend_target_group_arn_suffix
 }
+
+output "frontend_ecs_cluster_name" {
+  description = "Name of the ECS cluster hosting the frontend service."
+  value       = module.frontend_ecs.cluster_name
+}
+
+output "frontend_ecs_cluster_arn" {
+  description = "ARN of the ECS cluster hosting the frontend service."
+  value       = module.frontend_ecs.cluster_arn
+}
+
+output "frontend_ecs_service_name" {
+  description = "Name of the frontend ECS service."
+  value       = module.frontend_ecs.service_name
+}
+
+output "frontend_task_definition_arn" {
+  description = "ARN of the frontend ECS task definition."
+  value       = module.frontend_ecs.task_definition_arn
+}
+
+output "frontend_log_group_name" {
+  description = "Name of the frontend container CloudWatch log group."
+  value       = module.frontend_ecs.log_group_name
+}
+
+output "frontend_ecs_exec_log_group_name" {
+  description = "Name of the frontend ECS Exec CloudWatch log group."
+  value       = module.frontend_ecs.ecs_exec_log_group_name
+}

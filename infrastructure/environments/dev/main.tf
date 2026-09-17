@@ -1,5 +1,10 @@
 data "aws_availability_zones" "available" {
   state = "available"
+
+  filter {
+    name   = "zone-id"
+    values = var.availability_zone_ids
+  }
 }
 
 locals {
@@ -85,4 +90,30 @@ module "alb" {
   enable_deletion_protection = false
 
   tags = local.common_tags
+}
+
+module "frontend_ecs" {
+  source = "../../modules/frontend-ecs"
+
+  name = local.name
+
+  private_subnet_ids = module.network.private_application_subnet_ids
+  security_group_id  = module.security.frontend_security_group_id
+  target_group_arn   = module.alb.frontend_target_group_arn
+
+  container_image = var.frontend_container_image
+  container_port  = 80
+  desired_count   = var.frontend_desired_count
+
+  task_cpu    = 256
+  task_memory = 512
+
+  log_retention_days     = var.frontend_log_retention_days
+  enable_execute_command = true
+
+  tags = local.common_tags
+
+  depends_on = [
+    module.alb
+  ]
 }
