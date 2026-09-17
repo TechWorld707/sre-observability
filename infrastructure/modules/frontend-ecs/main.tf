@@ -15,6 +15,9 @@ locals {
 }
 
 data "aws_iam_policy_document" "frontend_logs_kms" {
+  #checkov:skip=CKV_AWS_109: The administrative statement is restricted to this account's root principal and applies only to the KMS key receiving this key policy.
+  #checkov:skip=CKV_AWS_111: CloudWatch Logs write access is restricted by service principal, Region, account and log-group encryption context.
+  #checkov:skip=CKV_AWS_356: AWS KMS key policies require Resource "*" because the policy is attached directly to one KMS key; it does not grant access to every account key.
   statement {
     sid    = "EnableAccountAdministration"
     effect = "Allow"
