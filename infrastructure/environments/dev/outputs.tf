@@ -102,3 +102,18 @@ output "frontend_ecs_exec_log_group_name" {
   description = "Name of the frontend ECS Exec CloudWatch log group."
   value       = module.frontend_ecs.ecs_exec_log_group_name
 }
+
+output "service_connect_namespace_id" {
+  description = "ID of the private ECS Service Connect namespace."
+  value       = module.service_connect.namespace_id
+}
+
+output "service_connect_namespace_arn" {
+  description = "ARN of the private ECS Service Connect namespace."
+  value       = module.service_connect.namespace_arn
+}
+
+output "service_connect_namespace_name" {
+  description = "Name of the private ECS Service Connect namespace."
+  value       = module.service_connect.namespace_name
+}

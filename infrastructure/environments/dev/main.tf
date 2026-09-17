@@ -92,6 +92,15 @@ module "alb" {
   tags = local.common_tags
 }
 
+module "service_connect" {
+  source = "../../modules/service-connect"
+
+  name        = "${local.name}-internal"
+  description = "Private service discovery namespace for MiniShop ECS services."
+
+  tags = local.common_tags
+}
+
 module "frontend_ecs" {
   source = "../../modules/frontend-ecs"
 
@@ -100,6 +109,8 @@ module "frontend_ecs" {
   private_subnet_ids = module.network.private_application_subnet_ids
   security_group_id  = module.security.frontend_security_group_id
   target_group_arn   = module.alb.frontend_target_group_arn
+
+  service_connect_namespace_arn = module.service_connect.namespace_arn
 
   container_image = var.frontend_container_image
   container_port  = 80

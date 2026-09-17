@@ -110,3 +110,18 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "service_connect_namespace_arn" {
+  description = "ARN of the Service Connect namespace used for private service communication."
+  type        = string
+
+  validation {
+    condition = can(
+      regex(
+        "^arn:aws[a-zA-Z-]*:servicediscovery:",
+        var.service_connect_namespace_arn
+      )
+    )
+    error_message = "The Service Connect namespace ARN must be a valid AWS Cloud Map ARN."
+  }
+}
