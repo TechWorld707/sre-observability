@@ -117,3 +117,19 @@ variable "frontend_log_retention_days" {
     error_message = "Frontend ECS logs must be retained for at least 365 days."
   }
 }
+
+variable "availability_zone_ids" {
+  description = "Stable AWS Availability Zone IDs used by this environment."
+  type        = list(string)
+
+  validation {
+    condition = (
+      length(var.availability_zone_ids) == 2 &&
+      alltrue([
+        for zone_id in var.availability_zone_ids :
+        can(regex("^[a-z0-9-]+-az[0-9]+$", zone_id))
+      ])
+    )
+    error_message = "Provide exactly two valid AWS Availability Zone IDs."
+  }
+}
