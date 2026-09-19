@@ -167,3 +167,23 @@ output "backend_service_connect_name" {
   description = "Private Service Connect name used by the frontend."
   value       = module.backend_ecs.service_connect_discovery_name
 }
+
+output "cloudwatch_dashboard_name" {
+  description = "Name of the CloudWatch operations dashboard."
+  value       = module.observability.dashboard_name
+}
+
+output "cloudwatch_dashboard_url" {
+  description = "AWS Console URL for the CloudWatch operations dashboard."
+  value       = module.observability.dashboard_url
+}
+
+output "observability_alerts_topic_arn" {
+  description = "ARN of the SNS topic used for operational alerts."
+  value       = module.observability.alerts_topic_arn
+}
+
+output "cloudwatch_alarm_names" {
+  description = "Names of the CloudWatch operational alarms."
+  value       = module.observability.alarm_names
+}
