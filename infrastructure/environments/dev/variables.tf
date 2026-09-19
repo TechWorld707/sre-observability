@@ -133,3 +133,38 @@ variable "availability_zone_ids" {
     error_message = "Provide exactly two valid AWS Availability Zone IDs."
   }
 }
+
+variable "backend_container_image" {
+  description = "Immutable GHCR image used by the backend ECS service."
+  type        = string
+
+  validation {
+    condition = (
+      startswith(var.backend_container_image, "ghcr.io/") &&
+      !endswith(var.backend_container_image, ":latest")
+    )
+    error_message = "The backend image must be a GHCR image with an immutable tag, not latest."
+  }
+}
+
+variable "backend_desired_count" {
+  description = "Desired number of backend ECS tasks."
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.backend_desired_count >= 2
+    error_message = "At least two backend tasks are required for multi-AZ availability."
+  }
+}
+
+variable "backend_log_retention_days" {
+  description = "Number of days to retain backend ECS logs."
+  type        = number
+  default     = 365
+
+  validation {
+    condition     = var.backend_log_retention_days >= 365
+    error_message = "Backend ECS logs must be retained for at least 365 days."
+  }
+}

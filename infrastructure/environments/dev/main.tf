@@ -128,3 +128,66 @@ module "frontend_ecs" {
     module.alb
   ]
 }
+
+module "postgresql" {
+  source = "../../modules/postgresql"
+
+  name = local.name
+
+  database_subnet_ids = module.network.isolated_database_subnet_ids
+  security_group_id   = module.security.database_security_group_id
+
+  database_name     = "minishop"
+  database_username = "minishop_admin"
+
+  engine_version         = "17"
+  parameter_group_family = "postgres17"
+  instance_class         = "db.t4g.micro"
+
+  allocated_storage_gib     = 20
+  max_allocated_storage_gib = 100
+
+  multi_az              = false
+  deletion_protection   = false
+  skip_final_snapshot   = true
+  backup_retention_days = 7
+
+  monitoring_interval_seconds  = 60
+  performance_insights_enabled = true
+  log_retention_days           = 365
+  secret_recovery_window_days  = 7
+
+  tags = local.common_tags
+}
+
+module "backend_ecs" {
+  source = "../../modules/backend-ecs"
+
+  name = local.name
+
+  cluster_arn        = module.frontend_ecs.cluster_arn
+  private_subnet_ids = module.network.private_application_subnet_ids
+  security_group_id  = module.security.backend_security_group_id
+
+  service_connect_namespace_arn = module.service_connect.namespace_arn
+
+  container_image = var.backend_container_image
+  container_port  = 8000
+  desired_count   = var.backend_desired_count
+
+  task_cpu    = 256
+  task_memory = 512
+
+  database_url_secret_arn     = module.postgresql.database_url_secret_arn
+  database_secret_kms_key_arn = module.postgresql.database_kms_key_arn
+
+  log_retention_days     = var.backend_log_retention_days
+  enable_execute_command = true
+
+  tags = local.common_tags
+
+  depends_on = [
+    module.postgresql,
+    module.service_connect
+  ]
+}
