@@ -191,3 +191,20 @@ module "backend_ecs" {
     module.service_connect
   ]
 }
+
+module "observability" {
+  source = "../../modules/observability"
+
+  name = "${var.project_name}-${var.environment}"
+
+  load_balancer_arn_suffix = module.alb.load_balancer_arn_suffix
+  target_group_arn_suffix  = module.alb.frontend_target_group_arn_suffix
+
+  ecs_cluster_name      = module.frontend_ecs.cluster_name
+  frontend_service_name = module.frontend_ecs.service_name
+  backend_service_name  = module.backend_ecs.service_name
+
+  database_instance_id = module.postgresql.db_instance_id
+
+  tags = var.tags
+}
