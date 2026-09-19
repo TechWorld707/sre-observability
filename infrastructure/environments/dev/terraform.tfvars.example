@@ -31,3 +31,6 @@ backend_container_image = "ghcr.io/techworld707/sre-observability/backend:replac
 
 backend_desired_count      = 2
 backend_log_retention_days = 365
+
+# Optional email recipient for CloudWatch alarms.
+alarm_email = null
