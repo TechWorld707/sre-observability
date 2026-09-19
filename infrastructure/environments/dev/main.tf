@@ -150,7 +150,7 @@ module "postgresql" {
   multi_az              = false
   deletion_protection   = false
   skip_final_snapshot   = true
-  backup_retention_days = 7
+  backup_retention_days = 1
 
   monitoring_interval_seconds  = 60
   performance_insights_enabled = true

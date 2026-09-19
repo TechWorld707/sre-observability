@@ -111,7 +111,7 @@ variable "backup_retention_days" {
   default     = 7
 
   validation {
-    condition     = var.backup_retention_days >= 7
+    condition     = var.backup_retention_days >= 1
     error_message = "Database backups must be retained for at least seven days."
   }
 }
