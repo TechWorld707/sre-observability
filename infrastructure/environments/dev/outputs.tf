@@ -117,3 +117,53 @@ output "service_connect_namespace_name" {
   description = "Name of the private ECS Service Connect namespace."
   value       = module.service_connect.namespace_name
 }
+
+output "postgresql_instance_id" {
+  description = "Identifier of the PostgreSQL RDS instance."
+  value       = module.postgresql.db_instance_id
+}
+
+output "postgresql_address" {
+  description = "Private DNS address of the PostgreSQL RDS instance."
+  value       = module.postgresql.db_instance_address
+}
+
+output "postgresql_port" {
+  description = "Port used by PostgreSQL."
+  value       = module.postgresql.db_instance_port
+}
+
+output "database_url_secret_arn" {
+  description = "ARN of the secret containing the backend DATABASE_URL."
+  value       = module.postgresql.database_url_secret_arn
+}
+
+output "database_kms_key_arn" {
+  description = "ARN of the KMS key encrypting database resources."
+  value       = module.postgresql.database_kms_key_arn
+}
+
+output "postgresql_log_group_name" {
+  description = "Name of the PostgreSQL CloudWatch log group."
+  value       = module.postgresql.postgresql_log_group_name
+}
+
+output "backend_ecs_service_name" {
+  description = "Name of the backend ECS service."
+  value       = module.backend_ecs.service_name
+}
+
+output "backend_task_definition_arn" {
+  description = "ARN of the backend ECS task definition."
+  value       = module.backend_ecs.task_definition_arn
+}
+
+output "backend_log_group_name" {
+  description = "Name of the backend CloudWatch log group."
+  value       = module.backend_ecs.log_group_name
+}
+
+output "backend_service_connect_name" {
+  description = "Private Service Connect name used by the frontend."
+  value       = module.backend_ecs.service_connect_discovery_name
+}

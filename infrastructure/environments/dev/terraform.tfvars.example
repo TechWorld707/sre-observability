@@ -25,3 +25,9 @@ frontend_container_image = "ghcr.io/techworld707/sre-observability/frontend:repl
 
 frontend_desired_count      = 2
 frontend_log_retention_days = 365
+
+# Replace this placeholder with the immutable commit-SHA tag published by GitHub Actions.
+backend_container_image = "ghcr.io/techworld707/sre-observability/backend:replace-with-commit-sha"
+
+backend_desired_count      = 2
+backend_log_retention_days = 365

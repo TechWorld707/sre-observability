@@ -25,7 +25,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "frontend" {
-  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming frontend ECS service.
+  #checkov:skip=CKV2_AWS_5: Checkov cannot resolve the cross-module attachment; this ID is attached to module.frontend_ecs.
   name        = "${var.name}-frontend"
   description = "Allows frontend traffic only from the Application Load Balancer."
   vpc_id      = var.vpc_id
@@ -42,7 +42,7 @@ resource "aws_security_group" "frontend" {
 }
 
 resource "aws_security_group" "backend" {
-  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming backend ECS service.
+  #checkov:skip=CKV2_AWS_5: Checkov cannot resolve the cross-module attachment; this ID is attached to module.backend_ecs.
   name        = "${var.name}-backend"
   description = "Allows backend traffic only from the frontend."
   vpc_id      = var.vpc_id
@@ -59,7 +59,7 @@ resource "aws_security_group" "backend" {
 }
 
 resource "aws_security_group" "database" {
-  #checkov:skip=CKV2_AWS_5: Security group is exported for attachment by the upcoming PostgreSQL RDS module.
+  #checkov:skip=CKV2_AWS_5: Checkov cannot resolve the cross-module attachment; this ID is attached to module.postgresql.
   name        = "${var.name}-database"
   description = "Allows PostgreSQL traffic only from the backend."
   vpc_id      = var.vpc_id
