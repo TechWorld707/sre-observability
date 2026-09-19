@@ -8,7 +8,7 @@ resource "random_password" "database" {
 }
 
 resource "aws_secretsmanager_secret" "database_url" {
-  #checkov:skip=CKV_AWS_66: Automatic rotation requires a rotation Lambda and coordinated database credential update, which will be added in a dedicated rotation change.
+  #checkov:skip=CKV2_AWS_57: Automatic rotation requires a rotation Lambda and coordinated database credential update, which will be added in a dedicated rotation change.
 
   name                    = "${var.name}/database-url"
   description             = "SQLAlchemy PostgreSQL connection URL used by the MiniShop backend."
