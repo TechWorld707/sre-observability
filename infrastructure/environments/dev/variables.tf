@@ -168,3 +168,18 @@ variable "backend_log_retention_days" {
     error_message = "Backend ECS logs must be retained for at least 365 days."
   }
 }
+
+variable "alarm_email" {
+  description = "Optional email address that receives CloudWatch alarm notifications."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition = (
+      var.alarm_email == null ||
+      can(regex("^[^@[:space:]]+@[^@[:space:]]+\\.[^@[:space:]]+$", var.alarm_email))
+    )
+    error_message = "alarm_email must be null or a valid email address."
+  }
+}

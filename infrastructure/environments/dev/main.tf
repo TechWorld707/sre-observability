@@ -197,6 +197,8 @@ module "observability" {
 
   name = "${var.project_name}-${var.environment}"
 
+  alarm_email = var.alarm_email
+
   load_balancer_arn_suffix = module.alb.load_balancer_arn_suffix
   target_group_arn_suffix  = module.alb.frontend_target_group_arn_suffix
 
